@@ -56,27 +56,27 @@ public class CustomNumberingProcessor extends Treeprocessor {
 		}
 	}
 
-	private void updateBlockCaption(AbstractBlock block, String title, int sectionNumber, int indexNumber) {
+	private void updateBlockCaption(AbstractBlock block, String title, String sectionNumber, int indexNumber) {
 		RubyObject rubyObject = toRubyObject( block );
 
 		rubyObject.setInstanceVariable( "@caption", RubyString.newString(
 				Ruby.getGlobalRuntime(),
-				String.format( "%s %d.%d: ", title, sectionNumber, indexNumber )
+				String.format( "%s %s.%d: ", title, sectionNumber, indexNumber )
 		) );
 	}
 
-	private int getSectionNumber(AbstractBlock block) {
+	private String getSectionNumber(AbstractBlock block) {
 		// this would only work if :sectnums: is turned on - otherwise for each section it will reset
 		// number to 1
 		RubyObject rubyObject = toRubyObject( block );
-		return (int) rubyObject.getInstanceVariable( "@number" ).toJava( Integer.class );
+		return rubyObject.getInstanceVariable( "@number" ).toString();
 	}
 
 	private RubyObject toRubyObject(AbstractBlock block) {
 		try {
 			Field f = block.delegate().getClass().getDeclaredFields()[1];
 			f.setAccessible( true );
-			return  (RubyObject) f.get( ( block.delegate() ) ) ;
+			return (RubyObject) f.get( ( block.delegate() ) );
 		}
 		catch (IllegalAccessException e) {
 			throw new IllegalStateException( "Is not able to convert to RubyObject. Processor cannot proceed.", e );
@@ -87,9 +87,9 @@ public class CustomNumberingProcessor extends Treeprocessor {
 
 		private AtomicInteger example;
 		private AtomicInteger table;
-		private final int sectionNumber;
+		private final String sectionNumber;
 
-		private NumberingIndexes(int sectionNumber) {
+		private NumberingIndexes(String sectionNumber) {
 			this.sectionNumber = sectionNumber;
 			example = new AtomicInteger( 1 );
 			table = new AtomicInteger( 1 );
@@ -103,11 +103,11 @@ public class CustomNumberingProcessor extends Treeprocessor {
 			return table;
 		}
 
-		public int getSectionNumber() {
+		public String getSectionNumber() {
 			return sectionNumber;
 		}
 
-		public static NumberingIndexes get(int sectionNumber) {
+		public static NumberingIndexes get(String sectionNumber) {
 			return new NumberingIndexes( sectionNumber );
 		}
 	}
