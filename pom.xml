@@ -13,11 +13,45 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <name>Hibernate Asciidoctor extensions</name>
+    <description>
+        Additional Asciidoctor extensions used by the Hibernate projects.
+    </description>
+    <url>http://hibernate.org</url>
+
+    <organization>
+        <name>Hibernate</name>
+        <url>http://www.hibernate.org</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>sannegrinovero</id>
+            <name>Sanne Grinovero</name>
+            <email>sanne@hibernate.org</email>
+            <organization>Red Hat, Inc.</organization>
+            <url>http://in.relation.to/sanne-grinovero/</url>
+        </developer>
+        <developer>
+            <id>guillaume.smet</id>
+            <name>Guillaume Smet</name>
+            <email>guillaume@hibernate.org</email>
+            <organization>Red Hat, Inc.</organization>
+            <url>http://in.relation.to/guillaume-smet/</url>
+        </developer>
+    </developers>
+
+    <prerequisites>
+        <maven>3.3.9</maven>
+    </prerequisites>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <asciidoctorj.version>1.5.3.2</asciidoctorj.version>
+        <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <license-maven-plugin.version>3.0</license-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -33,12 +67,12 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>${maven-compiler-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
+                <version>${license-maven-plugin.version}</version>
                 <configuration>
                     <header>${project.basedir}/src/main/resources/license.header</header>
                     <strictCheck>true</strictCheck>
@@ -66,5 +100,39 @@
             </plugin>
         </plugins>
     </build>
+
+    <inceptionYear>2017</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/hibernate/hibernate-asciidoctor-extensions.git</connection>
+        <developerConnection>scm:git:git@github.com:hibernate/hibernate-asciidoctor-extensions.git</developerConnection>
+        <url>http://github.com/hibernate/hibernate-asciidoctor-extensions</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>http://ci.hibernate.org/</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>jboss-releases-repository</id>
+            <name>JBoss Releases Repository</name>
+            <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>jboss-snapshots-repository</id>
+            <name>JBoss Snapshots Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>
