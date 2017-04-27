@@ -51,6 +51,10 @@
 
         <asciidoctorj.version>1.5.3.2</asciidoctorj.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <license-maven-plugin.version>3.0</license-maven-plugin.version>
     </properties>
 
@@ -68,6 +72,22 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven-source-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>com.mycila</groupId>
