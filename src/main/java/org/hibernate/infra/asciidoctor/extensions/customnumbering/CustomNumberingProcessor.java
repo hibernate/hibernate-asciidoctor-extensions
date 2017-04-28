@@ -7,11 +7,14 @@
 package org.hibernate.infra.asciidoctor.extensions.customnumbering;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.asciidoctor.ast.AbstractBlock;
 import org.asciidoctor.ast.Document;
+import org.asciidoctor.ast.Section;
+import org.asciidoctor.ast.Table;
 import org.asciidoctor.extension.Treeprocessor;
 import org.jruby.Ruby;
 import org.jruby.RubyObject;
@@ -23,11 +26,15 @@ import org.jruby.RubyString;
  * where {@code example_number} is reset for each section.
  *
  * @author Marko Bekhta
+ * @author Guillaume Smet
  */
 public class CustomNumberingProcessor extends Treeprocessor {
 
+	private static final int NOT_NUMBERED_SECTION_NUMBER = -1;
+
+	private final Map<Integer, SectionNumberingIndexes> sectionNumberingIndexesMap = new HashMap<>();
+
 	public CustomNumberingProcessor() {
-		super();
 	}
 
 	public CustomNumberingProcessor(Map<String, Object> config) {
@@ -37,39 +44,39 @@ public class CustomNumberingProcessor extends Treeprocessor {
 	@Override
 	public Document process(Document document) {
 		document.getBlocks().stream()
-				.filter( abstractBlock -> "section".equalsIgnoreCase( abstractBlock.getNodeName() ) )
-				.forEach( section -> processSection( section, NumberingIndexes.get( getSectionNumber( section ) ) ) );
+				.filter( block -> block instanceof Section )
+				.forEach( block -> processSection( (Section) block, getSectionNumberingIndexes( getSectionNumber( (Section) block ) ) ) );
 		return document;
 	}
 
-	private void processSection(AbstractBlock section, NumberingIndexes indexes) {
+	private void processSection(Section section, SectionNumberingIndexes indexes) {
 		for ( AbstractBlock block : section.getBlocks() ) {
 			if ( "example".equalsIgnoreCase( block.getNodeName() ) ) {
-				updateBlockCaption( block, "Example", indexes.getSectionNumber(), indexes.getExample().getAndIncrement() );
+				updateBlockCaption( block, "Example", indexes.getSectionNumber(), indexes.newExampleIndex() );
 			}
-			else if ( "table".equalsIgnoreCase( block.getNodeName() ) ) {
-				updateBlockCaption( block, "Table", indexes.getSectionNumber(), indexes.getTable().getAndIncrement() );
+			else if ( block instanceof Table ) {
+				updateBlockCaption( block, "Table", indexes.getSectionNumber(), indexes.newTableIndex() );
 			}
-			else if ( "section".equalsIgnoreCase( block.getNodeName() ) ) {
-				processSection( block, indexes );
+			else if ( block instanceof Section ) {
+				processSection( (Section) block, indexes );
 			}
 		}
 	}
 
-	private void updateBlockCaption(AbstractBlock block, String title, String sectionNumber, int indexNumber) {
+	private void updateBlockCaption(AbstractBlock block, String title, int sectionNumber, int indexNumber) {
 		RubyObject rubyObject = toRubyObject( block );
 
 		rubyObject.setInstanceVariable( "@caption", RubyString.newString(
 				Ruby.getGlobalRuntime(),
-				String.format( "%s %s.%d: ", title, sectionNumber, indexNumber )
+				sectionNumber == NOT_NUMBERED_SECTION_NUMBER ?
+						String.format( "%s %d: ", title, indexNumber ) :
+						String.format( "%s %d.%d: ", title, sectionNumber, indexNumber )
 		) );
 	}
 
-	private String getSectionNumber(AbstractBlock block) {
-		// this would only work if :sectnums: is turned on - otherwise for each section it will reset
-		// number to 1
-		RubyObject rubyObject = toRubyObject( block );
-		return rubyObject.getInstanceVariable( "@number" ).toString();
+	private int getSectionNumber(Section section) {
+		// return the section number if the section is numbered, return a default global section number if not
+		return section.numbered() ? section.number() : NOT_NUMBERED_SECTION_NUMBER;
 	}
 
 	private RubyObject toRubyObject(AbstractBlock block) {
@@ -83,33 +90,32 @@ public class CustomNumberingProcessor extends Treeprocessor {
 		}
 	}
 
-	private static class NumberingIndexes {
+	private SectionNumberingIndexes getSectionNumberingIndexes(int sectionNumber) {
+		return sectionNumberingIndexesMap.computeIfAbsent( sectionNumber, sn -> new SectionNumberingIndexes( sn ) );
+	}
 
-		private AtomicInteger example;
-		private AtomicInteger table;
-		private final String sectionNumber;
+	private static class SectionNumberingIndexes {
 
-		private NumberingIndexes(String sectionNumber) {
+		private final int sectionNumber;
+		private AtomicInteger exampleIndex;
+		private AtomicInteger tableIndex;
+
+		public SectionNumberingIndexes(int sectionNumber) {
 			this.sectionNumber = sectionNumber;
-			example = new AtomicInteger( 1 );
-			table = new AtomicInteger( 1 );
+			exampleIndex = new AtomicInteger( 1 );
+			tableIndex = new AtomicInteger( 1 );
 		}
 
-		public AtomicInteger getExample() {
-			return example;
-		}
-
-		public AtomicInteger getTable() {
-			return table;
-		}
-
-		public String getSectionNumber() {
+		public int getSectionNumber() {
 			return sectionNumber;
 		}
 
-		public static NumberingIndexes get(String sectionNumber) {
-			return new NumberingIndexes( sectionNumber );
+		public int newExampleIndex() {
+			return exampleIndex.getAndIncrement();
+		}
+
+		public int newTableIndex() {
+			return tableIndex.getAndIncrement();
 		}
 	}
-
 }
