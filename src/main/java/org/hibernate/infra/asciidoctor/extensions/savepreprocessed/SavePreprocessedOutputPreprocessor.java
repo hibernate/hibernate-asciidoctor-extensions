@@ -38,10 +38,9 @@ public class SavePreprocessedOutputPreprocessor extends Preprocessor {
 	}
 
 	@Override
-	public PreprocessorReader process(Document document, PreprocessorReader reader) {
+	public void process(Document document, PreprocessorReader reader) {
 		try {
 			Files.write( Paths.get( OUTPUT_FILE ), filterLines( reader.readLines() ) );
-			return reader;
 		}
 		catch (IOException e) {
 			throw new RuntimeException( "Unable to write the preprocessed file " + OUTPUT_FILE, e );

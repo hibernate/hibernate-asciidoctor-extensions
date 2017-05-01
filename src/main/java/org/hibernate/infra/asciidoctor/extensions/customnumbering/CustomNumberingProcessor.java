@@ -6,15 +6,15 @@
  */
 package org.hibernate.infra.asciidoctor.extensions.customnumbering;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.asciidoctor.ast.AbstractBlock;
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.Section;
+import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.ast.Table;
 import org.asciidoctor.extension.Treeprocessor;
+import org.asciidoctor.internal.RubyObjectWrapper;
 import org.jruby.Ruby;
 import org.jruby.RubyObject;
 import org.jruby.RubyString;
@@ -49,21 +49,24 @@ public class CustomNumberingProcessor extends Treeprocessor {
 	}
 
 	private void processSection(Section section, SectionNumberingIndexes indexes) {
-		for ( AbstractBlock block : section.getBlocks() ) {
-			if ( "example".equalsIgnoreCase( block.getNodeName() ) ) {
-				updateBlockCaption( block, "Example", indexes.getSectionNumber(), indexes.newExampleIndex() );
+		for ( StructuralNode node : section.getBlocks() ) {
+			if ( "example".equalsIgnoreCase( node.getNodeName() ) ) {
+				updateBlockCaption( node, "Example", indexes.getSectionNumber(), indexes.newExampleIndex() );
 			}
-			else if ( block instanceof Table ) {
-				updateBlockCaption( block, "Table", indexes.getSectionNumber(), indexes.newTableIndex() );
+			else if ( node instanceof Table ) {
+				updateBlockCaption( node, "Table", indexes.getSectionNumber(), indexes.newTableIndex() );
 			}
-			else if ( block instanceof Section ) {
-				processSection( (Section) block, indexes );
+			else if ( node instanceof Section ) {
+				processSection( (Section) node, indexes );
 			}
 		}
 	}
 
-	private void updateBlockCaption(AbstractBlock block, String title, String sectionNumber, int indexNumber) {
-		RubyObject rubyObject = toRubyObject( block );
+	private void updateBlockCaption(StructuralNode block, String title, String sectionNumber, int indexNumber) {
+		if ( !( block instanceof RubyObjectWrapper ) ) {
+			throw new IllegalStateException( String.format( "%s block is not extended from RubyObjectWrapper. Processor cannot proceed.", title ) );
+		}
+		RubyObject rubyObject = toRubyObject( (RubyObjectWrapper) block );
 
 		rubyObject.setInstanceVariable( "@caption", RubyString.newString(
 				Ruby.getGlobalRuntime(),
@@ -77,18 +80,11 @@ public class CustomNumberingProcessor extends Treeprocessor {
 		// return the section number if the section is numbered, return a default global section number if not
 		// cannot use section.number() to get the number as for Appendix sections number is a Character and this method
 		// will fail
-		return section.numbered() ? toRubyObject( section ).getInstanceVariable( "@number" ).toString() : NOT_NUMBERED_SECTION_NUMBER;
+		return section.isNumbered() ? toRubyObject( (RubyObjectWrapper) section ).getInstanceVariable( "@number" ).toString() : NOT_NUMBERED_SECTION_NUMBER;
 	}
 
-	private RubyObject toRubyObject(AbstractBlock block) {
-		try {
-			Field f = block.delegate().getClass().getDeclaredFields()[1];
-			f.setAccessible( true );
-			return (RubyObject) f.get( ( block.delegate() ) );
-		}
-		catch (IllegalAccessException e) {
-			throw new IllegalStateException( "Is not able to convert to RubyObject. Processor cannot proceed.", e );
-		}
+	private RubyObject toRubyObject(RubyObjectWrapper block) {
+		return (RubyObject) block.getRubyObject();
 	}
 
 	private SectionNumberingIndexes getSectionNumberingIndexes(String sectionNumber) {

@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.asciidoctor.ast.AbstractBlock;
-import org.asciidoctor.ast.DocumentRuby;
+import org.asciidoctor.ast.Document;
+import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.extension.BlockProcessor;
 import org.asciidoctor.extension.Reader;
 
@@ -32,10 +32,10 @@ public class DocBookCustomRoleBlockProcessor extends BlockProcessor {
 	}
 
 	@Override
-	public Object process(AbstractBlock parent, Reader reader, Map<String, Object> attributes) {
+	public Object process(StructuralNode parent, Reader reader, Map<String, Object> attributes) {
 		List<String> lines = reader.readLines();
 
-		DocumentRuby document = parent.getDocument();
+		Document document = parent.getDocument();
 		String backend = String.valueOf( document.getAttr( "backend" ) );
 
 		if ( !backend.startsWith( "docbook" ) ) {
