@@ -17,6 +17,34 @@ public class Foo{
 ----
 ====
 
+.First Table Title
+|===
+|Name of Column 1 |Name of Column 2 |Name of Column 3
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|===
+
+.Second Table Title
+|===
+|Name of Column 1 |Name of Column 2 |Name of Column 3 |Name of Column 4
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+|Cell in column 3, row 1
+|Cell in column 4, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|Cell in column 3, row 2
+|Cell in column 4, row 2
+|===
+
 === Some other inner title
 
 .XML example

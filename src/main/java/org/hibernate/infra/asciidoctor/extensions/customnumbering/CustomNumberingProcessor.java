@@ -9,7 +9,6 @@ package org.hibernate.infra.asciidoctor.extensions.customnumbering;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.asciidoctor.ast.AbstractBlock;
 import org.asciidoctor.ast.Document;
@@ -30,9 +29,9 @@ import org.jruby.RubyString;
  */
 public class CustomNumberingProcessor extends Treeprocessor {
 
-	private static final int NOT_NUMBERED_SECTION_NUMBER = -1;
+	private static final String NOT_NUMBERED_SECTION_NUMBER = "-1";
 
-	private final Map<Integer, SectionNumberingIndexes> sectionNumberingIndexesMap = new HashMap<>();
+	private final Map<String, SectionNumberingIndexes> sectionNumberingIndexesMap = new HashMap<>();
 
 	public CustomNumberingProcessor() {
 	}
@@ -63,20 +62,22 @@ public class CustomNumberingProcessor extends Treeprocessor {
 		}
 	}
 
-	private void updateBlockCaption(AbstractBlock block, String title, int sectionNumber, int indexNumber) {
+	private void updateBlockCaption(AbstractBlock block, String title, String sectionNumber, int indexNumber) {
 		RubyObject rubyObject = toRubyObject( block );
 
 		rubyObject.setInstanceVariable( "@caption", RubyString.newString(
 				Ruby.getGlobalRuntime(),
 				sectionNumber == NOT_NUMBERED_SECTION_NUMBER ?
 						String.format( "%s %d: ", title, indexNumber ) :
-						String.format( "%s %d.%d: ", title, sectionNumber, indexNumber )
+						String.format( "%s %s.%d: ", title, sectionNumber, indexNumber )
 		) );
 	}
 
-	private int getSectionNumber(Section section) {
+	private String getSectionNumber(Section section) {
 		// return the section number if the section is numbered, return a default global section number if not
-		return section.numbered() ? section.number() : NOT_NUMBERED_SECTION_NUMBER;
+		// cannot use section.number() to get the number as for Appendix sections number is a Character and this method
+		// will fail
+		return section.numbered() ? toRubyObject( section ).getInstanceVariable( "@number" ).toString() : NOT_NUMBERED_SECTION_NUMBER;
 	}
 
 	private RubyObject toRubyObject(AbstractBlock block) {
@@ -90,32 +91,32 @@ public class CustomNumberingProcessor extends Treeprocessor {
 		}
 	}
 
-	private SectionNumberingIndexes getSectionNumberingIndexes(int sectionNumber) {
+	private SectionNumberingIndexes getSectionNumberingIndexes(String sectionNumber) {
 		return sectionNumberingIndexesMap.computeIfAbsent( sectionNumber, sn -> new SectionNumberingIndexes( sn ) );
 	}
 
 	private static class SectionNumberingIndexes {
 
-		private final int sectionNumber;
-		private AtomicInteger exampleIndex;
-		private AtomicInteger tableIndex;
+		private final String sectionNumber;
+		private int exampleIndex;
+		private int tableIndex;
 
-		public SectionNumberingIndexes(int sectionNumber) {
+		public SectionNumberingIndexes(String sectionNumber) {
 			this.sectionNumber = sectionNumber;
-			exampleIndex = new AtomicInteger( 1 );
-			tableIndex = new AtomicInteger( 1 );
+			exampleIndex = 1;
+			tableIndex = 1;
 		}
 
-		public int getSectionNumber() {
+		public String getSectionNumber() {
 			return sectionNumber;
 		}
 
 		public int newExampleIndex() {
-			return exampleIndex.getAndIncrement();
+			return exampleIndex++;
 		}
 
 		public int newTableIndex() {
-			return tableIndex.getAndIncrement();
+			return tableIndex++;
 		}
 	}
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.regex.Pattern;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -31,8 +31,6 @@ import org.jsoup.select.Elements;
  */
 public class ExampleNumberingTest {
 
-	private static final Pattern EXAMPLE_TITLE_PATTERN = Pattern.compile( "Example [\\d]+\\.[\\d]+: .*" );
-
 	private static Asciidoctor DOCTOR;
 
 	@BeforeClass
@@ -50,19 +48,37 @@ public class ExampleNumberingTest {
 
 			Document convertedDoc = Jsoup.parse( writer.toString() );
 
-			Elements examples = convertedDoc.getElementsByClass( "exampleblock" );
-
-			examples.forEach( this::assertExampleNumbering );
+			// check that example numbers are constructed correctly
+			Elements mainSections = convertedDoc.getElementsByClass( "sect1" );
+			int sectionIndex = 1;
+			for ( Element section : mainSections ) {
+				assertSectionExampleNumbering(
+						section.getElementsByClass( "exampleblock" ),
+						"Example",
+						sectionIndex,
+						element -> element.child( 0 ).html()
+				);
+				assertSectionExampleNumbering(
+						section.getElementsByTag( "table" ),
+						"Table",
+						sectionIndex,
+						element -> element.getElementsByTag( "caption" ).html()
+				);
+				sectionIndex++;
+			}
 
 		}
 	}
 
-	private void assertExampleNumbering(Element example) {
-		Element titleDiv = example.child( 0 );
-		Assert.assertTrue( "Class should match", titleDiv.hasClass( "title" ) );
-		Assert.assertTrue( "Example caption should match regexp",
-				EXAMPLE_TITLE_PATTERN.matcher( titleDiv.html() ).matches()
-		);
-
+	private void assertSectionExampleNumbering(Elements elements, String captionStart, int sectionIndex, Function<Element, String> captionRetriver) {
+		int index = 1;
+		for ( Element element : elements ) {
+			String exampleCaptionStart = String.format( "%s %d.%d: ", captionStart, sectionIndex, index++ );
+			String caption = captionRetriver.apply( element );
+			Assert.assertTrue( String.format( "Caption should start with %s", exampleCaptionStart ),
+					caption.startsWith( exampleCaptionStart )
+			);
+		}
 	}
+
 }
