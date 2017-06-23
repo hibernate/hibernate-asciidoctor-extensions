@@ -6,7 +6,9 @@
  */
 package org.hibernate.infra.asciidoctor.extensions.customnumbering;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.asciidoctor.ast.Document;
@@ -31,6 +33,8 @@ public class CustomNumberingProcessor extends Treeprocessor {
 
 	private static final String NOT_NUMBERED_SECTION_NUMBER = "-1";
 
+	private static final List<String> LISTING_ROLES = Arrays.asList( "listing", "api" );
+
 	private final Map<String, SectionNumberingIndexes> sectionNumberingIndexesMap = new HashMap<>();
 
 	public CustomNumberingProcessor() {
@@ -51,7 +55,12 @@ public class CustomNumberingProcessor extends Treeprocessor {
 	private void processSection(Section section, SectionNumberingIndexes indexes) {
 		for ( StructuralNode node : section.getBlocks() ) {
 			if ( "example".equalsIgnoreCase( node.getNodeName() ) ) {
-				updateBlockCaption( node, "Example", indexes.getSectionNumber(), indexes.newExampleIndex() );
+				if ( isListing(node) ) {
+					updateBlockCaption( node, "Listing", indexes.getSectionNumber(), indexes.newListingIndex() );
+				}
+				else {
+					updateBlockCaption( node, "Example", indexes.getSectionNumber(), indexes.newExampleIndex() );
+				}
 			}
 			else if ( node instanceof Table ) {
 				updateBlockCaption( node, "Table", indexes.getSectionNumber(), indexes.newTableIndex() );
@@ -91,20 +100,35 @@ public class CustomNumberingProcessor extends Treeprocessor {
 		return sectionNumberingIndexesMap.computeIfAbsent( sectionNumber, sn -> new SectionNumberingIndexes( sn ) );
 	}
 
+	private boolean isListing(StructuralNode block) {
+		for ( String listingRole : LISTING_ROLES ) {
+			if ( block.getRoles().contains( listingRole ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private static class SectionNumberingIndexes {
 
 		private final String sectionNumber;
+		private int listingIndex;
 		private int exampleIndex;
 		private int tableIndex;
 
 		public SectionNumberingIndexes(String sectionNumber) {
 			this.sectionNumber = sectionNumber;
+			listingIndex = 1;
 			exampleIndex = 1;
 			tableIndex = 1;
 		}
 
 		public String getSectionNumber() {
 			return sectionNumber;
+		}
+
+		public int newListingIndex() {
+			return listingIndex++;
 		}
 
 		public int newExampleIndex() {
