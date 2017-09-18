@@ -1,5 +1,7 @@
 //= Some title
 :sectnums:
+:xrefstyle: full
+
 == Some other title
 
 some very useful text which makes no sense.
@@ -47,6 +49,7 @@ public class Foo{
 
 === Some other inner title
 
+[[xml-example-ref]]
 .XML example
 ====
 [source, XML]
@@ -57,6 +60,8 @@ public class Foo{
 </rootTag>
 ----
 ====
+
+As we see in <<xml-example-ref>>
 
 == Yet another title
 

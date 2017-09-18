@@ -6,13 +6,18 @@
  */
 package org.hibernate.infra.asciidoctor.extensions.customnumbering;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -66,7 +71,15 @@ public class ExampleNumberingTest {
 				);
 				sectionIndex++;
 			}
-
+			//check numbering in references:
+			List<Element> elements = convertedDoc.getElementsByTag( "p" ).stream()
+					.filter( p -> p.html().startsWith( "As we see" ) ) // find a <p> where the reference is present.
+					.collect( Collectors.toList() );
+			assertEquals( "should be only one element in collection", 1, elements.size() );
+			assertTrue(
+					"Caption should start with Example 1.2",
+					elements.get( 0 ).getElementsByTag( "a" ).html().startsWith( "Example 1.2" )
+			);
 		}
 	}
 

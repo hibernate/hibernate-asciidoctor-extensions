@@ -76,13 +76,23 @@ public class CustomNumberingProcessor extends Treeprocessor {
 			throw new IllegalStateException( String.format( "%s block is not extended from RubyObjectWrapper. Processor cannot proceed.", title ) );
 		}
 		RubyObject rubyObject = toRubyObject( (RubyObjectWrapper) block );
+		String blockNumber = getBlockNumber( sectionNumber, indexNumber );
 
 		rubyObject.setInstanceVariable( "@caption", RubyString.newString(
 				Ruby.getGlobalRuntime(),
-				sectionNumber == NOT_NUMBERED_SECTION_NUMBER ?
-						String.format( "%s %d: ", title, indexNumber ) :
-						String.format( "%s %s.%d: ", title, sectionNumber, indexNumber )
+				String.format( "%s %s: ", title, blockNumber )
 		) );
+
+		rubyObject.setInstanceVariable( "@number", RubyString.newString(
+				Ruby.getGlobalRuntime(),
+				blockNumber
+		) );
+	}
+
+	private String getBlockNumber(String sectionNumber, int indexNumber) {
+		return sectionNumber == NOT_NUMBERED_SECTION_NUMBER ?
+				String.format( "%d", indexNumber ) :
+				String.format( "%s.%d", sectionNumber, indexNumber );
 	}
 
 	private String getSectionNumber(Section section) {

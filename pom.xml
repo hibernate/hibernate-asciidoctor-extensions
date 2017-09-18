@@ -49,7 +49,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <asciidoctorj.version>1.6.0-alpha.3</asciidoctorj.version>
+        <asciidoctorj.version>1.6.0-alpha.5</asciidoctorj.version>
         <junit.version>4.12</junit.version>
         <jsoup.version>1.10.2</jsoup.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
