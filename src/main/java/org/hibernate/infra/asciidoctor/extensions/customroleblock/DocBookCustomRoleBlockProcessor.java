@@ -36,7 +36,7 @@ public class DocBookCustomRoleBlockProcessor extends BlockProcessor {
 		List<String> lines = reader.readLines();
 
 		Document document = parent.getDocument();
-		String backend = String.valueOf( document.getAttr( "backend" ) );
+		String backend = String.valueOf( document.getAttribute( "backend" ) );
 
 		if ( !backend.startsWith( "docbook" ) ) {
 			throw new IllegalStateException(
