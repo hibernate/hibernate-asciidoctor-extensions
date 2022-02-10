@@ -36,7 +36,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                withMaven(mavenLocalRepo: env.WORKSPACE_TMP + '.m2repository') {
+                withMaven(mavenLocalRepo: env.WORKSPACE_TMP + '/.m2repository') {
                     sh "mvn clean verify"
                 }
             }
@@ -62,7 +62,7 @@ pipeline {
                     echo "Performing full release for version ${releaseVersion.toString()}"
 
                     withMaven(mavenSettingsConfig: params.RELEASE_DRY_RUN ? null : 'ci-hibernate.deploy.settings.maven',
-                            mavenLocalRepo: env.WORKSPACE_TMP + '.m2repository') {
+                            mavenLocalRepo: env.WORKSPACE_TMP + '/.m2repository') {
                         configFileProvider([configFile(fileId: 'release.config.ssh', targetLocation: env.HOME + '/.ssh/config')]) {
                             sshagent(['ed25519.Hibernate-CI.github.com']) {
                                 sh 'cat $HOME/.ssh/config'
