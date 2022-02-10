@@ -11,12 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.asciidoctor.ast.Block;
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.ast.Section;
 import org.asciidoctor.ast.StructuralNode;
 import org.asciidoctor.ast.Table;
 import org.asciidoctor.extension.Treeprocessor;
-import org.asciidoctor.internal.RubyObjectWrapper;
+import org.asciidoctor.jruby.internal.RubyObjectWrapper;
 import org.jruby.Ruby;
 import org.jruby.RubyObject;
 import org.jruby.RubyString;
@@ -83,7 +84,7 @@ public class CustomNumberingProcessor extends Treeprocessor {
 				String.format( "%s %s: ", title, blockNumber )
 		) );
 
-		rubyObject.setInstanceVariable( "@number", RubyString.newString(
+		rubyObject.setInstanceVariable( "@numeral", RubyString.newString(
 				Ruby.getGlobalRuntime(),
 				blockNumber
 		) );
@@ -99,7 +100,7 @@ public class CustomNumberingProcessor extends Treeprocessor {
 		// return the section number if the section is numbered, return a default global section number if not
 		// cannot use section.number() to get the number as for Appendix sections number is a Character and this method
 		// will fail
-		return section.isNumbered() ? toRubyObject( (RubyObjectWrapper) section ).getInstanceVariable( "@number" ).toString() : NOT_NUMBERED_SECTION_NUMBER;
+		return section.isNumbered() ? section.getNumeral() : NOT_NUMBERED_SECTION_NUMBER;
 	}
 
 	private RubyObject toRubyObject(RubyObjectWrapper block) {
