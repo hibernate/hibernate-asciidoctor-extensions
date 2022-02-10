@@ -36,7 +36,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh "mvn -B clean verify"
+                withMaven(mavenLocalRepo: env.WORKSPACE_TMP + '.m2repository') {
+                    sh "mvn clean verify"
+                }
             }
         }
         stage('Release') {
@@ -65,13 +67,13 @@ pipeline {
                             sshagent(['ed25519.Hibernate-CI.github.com']) {
                                 sh 'cat $HOME/.ssh/config'
                                 sh """ \
-                                    mvn --batch-mode release:prepare \
+                                    mvn release:prepare \
                                     -Dtag=${releaseVersion.toString()} \
                                     -DreleaseVersion=${releaseVersion.toString()} \
                                     -DdevelopmentVersion=${developmentVersion.toString()} \
                                 """
                                 sh """ \
-                                    mvn --batch-mode release:perform ${params.RELEASE_DRY_RUN ? '-DdryRun' : ''} \
+                                    mvn release:perform ${params.RELEASE_DRY_RUN ? '-DdryRun' : ''} \
                                 """
                             }
                         }
