@@ -1,5 +1,7 @@
 @Library('hibernate-jenkins-pipeline-helpers@1.5') _
 
+import org.hibernate.jenkins.pipeline.helpers.version.Version
+
 pipeline {
     agent {
         label 'Worker&&Containers'
