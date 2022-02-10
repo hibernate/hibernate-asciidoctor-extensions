@@ -58,6 +58,7 @@
         <asciidoctorj.version>1.6.0-alpha.5</asciidoctorj.version>
         <junit.version>4.13.2</junit.version>
         <jsoup.version>1.14.3</jsoup.version>
+        <assertj.version>3.22.0</assertj.version>
         <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
         <maven-release-plugin.version>3.0.0-M5</maven-release-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -92,6 +93,12 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

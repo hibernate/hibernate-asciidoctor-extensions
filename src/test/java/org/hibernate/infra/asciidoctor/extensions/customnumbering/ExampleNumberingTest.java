@@ -6,8 +6,7 @@
  */
 package org.hibernate.infra.asciidoctor.extensions.customnumbering;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.FileReader;
@@ -75,11 +74,12 @@ public class ExampleNumberingTest {
 			List<Element> elements = convertedDoc.getElementsByTag( "p" ).stream()
 					.filter( p -> p.html().startsWith( "As we see" ) ) // find a <p> where the reference is present.
 					.collect( Collectors.toList() );
-			assertEquals( "should be only one element in collection", 1, elements.size() );
-			assertTrue(
-					"Caption should start with Example 1.2",
-					elements.get( 0 ).getElementsByTag( "a" ).html().startsWith( "Example 1.2" )
-			);
+			assertThat( elements )
+					.as( "should be only one element in collection" )
+					.hasSize( 1 );
+			assertThat( elements.get( 0 ).getElementsByTag( "a" ).html() )
+					.as( "caption" )
+					.startsWith( "Example 1.2" );
 		}
 	}
 
@@ -88,9 +88,9 @@ public class ExampleNumberingTest {
 		for ( Element element : elements ) {
 			String exampleCaptionStart = String.format( "%s %d.%d: ", captionStart, sectionIndex, index++ );
 			String caption = captionRetriver.apply( element );
-			Assert.assertTrue( String.format( "Caption should start with %s", exampleCaptionStart ),
-					caption.startsWith( exampleCaptionStart )
-			);
+			assertThat( caption )
+					.as( "caption" )
+					.startsWith( exampleCaptionStart );
 		}
 	}
 
