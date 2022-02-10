@@ -71,7 +71,7 @@ pipeline {
                                     -DdevelopmentVersion=${developmentVersion.toString()} \
                                 """
                                 sh """ \
-                                    mvn --batch-mode release:perform \
+                                    mvn --batch-mode release:perform ${params.RELEASE_DRY_RUN ? '-DdryRun' : ''} \
                                 """
                             }
                         }
