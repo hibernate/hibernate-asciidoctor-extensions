@@ -57,7 +57,7 @@
 
         <asciidoctorj.version>1.6.0-alpha.5</asciidoctorj.version>
         <junit.version>4.13.2</junit.version>
-        <jsoup.version>1.10.2</jsoup.version>
+        <jsoup.version>1.14.3</jsoup.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
