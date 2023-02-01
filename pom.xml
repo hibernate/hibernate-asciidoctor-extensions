@@ -67,7 +67,7 @@
         <jsoup.version>1.15.3</jsoup.version>
         <assertj.version>3.24.2</assertj.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-        <maven-release-plugin.version>3.0.0-M5</maven-release-plugin.version>
+        <maven-release-plugin.version>3.0.0-M7</maven-release-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M2</maven-deploy-plugin.version>
         <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
