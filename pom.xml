@@ -64,7 +64,7 @@
 
         <asciidoctorj.version>2.5.7</asciidoctorj.version>
         <junit.version>4.13.2</junit.version>
-        <jsoup.version>1.15.3</jsoup.version>
+        <jsoup.version>1.15.4</jsoup.version>
         <assertj.version>3.24.2</assertj.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-release-plugin.version>3.0.0-M7</maven-release-plugin.version>
