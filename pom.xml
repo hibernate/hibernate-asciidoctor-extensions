@@ -62,7 +62,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <asciidoctorj.version>2.5.9</asciidoctorj.version>
+        <asciidoctorj.version>2.5.10</asciidoctorj.version>
         <junit.version>4.13.2</junit.version>
         <jsoup.version>1.16.1</jsoup.version>
         <assertj.version>3.24.2</assertj.version>
