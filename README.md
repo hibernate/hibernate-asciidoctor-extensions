@@ -29,4 +29,4 @@ The source code is licensed under the Apache License version 2.0.
 ## Links
 
  * Issue tracker: https://github.com/hibernate/hibernate-asciidoctor-extensions/issues
- * Continuous integration: http://ci.hibernate.org/job/hibernate-asciidoctor-extensions-master/
+ * Continuous integration: https://ci.hibernate.org/job/hibernate-asciidoctor-extensions/
