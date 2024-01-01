@@ -18,6 +18,7 @@ import java.util.Map;
 import org.asciidoctor.ast.Document;
 import org.asciidoctor.extension.Preprocessor;
 import org.asciidoctor.extension.PreprocessorReader;
+import org.asciidoctor.extension.Reader;
 
 /**
  * Preprocessor used to save the preprocessed output of the asciidoctor conversion. It allows to generate a single file
@@ -39,11 +40,13 @@ public class SavePreprocessedOutputPreprocessor extends Preprocessor {
 	}
 
 	@Override
-	public void process(Document document, PreprocessorReader reader) {
+	public Reader process(Document document, PreprocessorReader reader) {
 		try {
 			Path filePath = Paths.get( OUTPUT_FILE );
 			Files.createDirectories( filePath.getParent() );
-			Files.write( filePath, filterLines( reader.readLines() ) );
+			List<String> lines = filterLines( reader.readLines() );
+			Files.write( filePath, lines );
+			return newReader( lines );
 		}
 		catch (IOException e) {
 			throw new RuntimeException( "Unable to write the preprocessed file " + OUTPUT_FILE, e );

@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.Options;
 import org.asciidoctor.OptionsBuilder;
 import org.asciidoctor.SafeMode;
 import org.jsoup.Jsoup;
@@ -48,7 +49,8 @@ public class ExampleNumberingTest {
 		File file = Paths.get( ExampleNumberingTest.class.getClassLoader().getResource( "test.asciidoc" ).toURI() ).toFile();
 		try ( FileReader reader = new FileReader( file ) ) {
 			StringWriter writer = new StringWriter();
-			DOCTOR.convert( reader, writer, OptionsBuilder.options().safe( SafeMode.SAFE ).asMap() );
+
+			DOCTOR.convert( reader, writer, Options.builder().safe( SafeMode.SAFE ).build() );
 
 			Document convertedDoc = Jsoup.parse( writer.toString() );
 
