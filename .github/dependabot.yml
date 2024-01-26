@@ -4,3 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+    groups:
+      maven-plugins:
+        patterns:
+          - "*maven*plugin*"
+          - "org.apache.maven*:*"
