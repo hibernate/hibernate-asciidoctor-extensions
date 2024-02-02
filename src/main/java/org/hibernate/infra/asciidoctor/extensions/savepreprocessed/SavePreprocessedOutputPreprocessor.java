@@ -8,6 +8,7 @@ package org.hibernate.infra.asciidoctor.extensions.savepreprocessed;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +41,9 @@ public class SavePreprocessedOutputPreprocessor extends Preprocessor {
 	@Override
 	public void process(Document document, PreprocessorReader reader) {
 		try {
-			Files.write( Paths.get( OUTPUT_FILE ), filterLines( reader.readLines() ) );
+			Path filePath = Paths.get( OUTPUT_FILE );
+			Files.createDirectories( filePath.getParent() );
+			Files.write( filePath, filterLines( reader.readLines() ) );
 		}
 		catch (IOException e) {
 			throw new RuntimeException( "Unable to write the preprocessed file " + OUTPUT_FILE, e );
