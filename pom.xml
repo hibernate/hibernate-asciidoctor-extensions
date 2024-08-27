@@ -10,7 +10,7 @@
 
     <groupId>org.hibernate.infra</groupId>
     <artifactId>hibernate-asciidoctor-extensions</artifactId>
-    <version>3.0.0.Final</version>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Hibernate Asciidoctor extensions</name>
@@ -191,7 +191,7 @@
         <connection>scm:git:git://github.com/hibernate/hibernate-asciidoctor-extensions.git</connection>
         <developerConnection>scm:git:git@github.com:hibernate/hibernate-asciidoctor-extensions.git</developerConnection>
         <url>http://github.com/hibernate/hibernate-asciidoctor-extensions</url>
-        <tag>3.0.0.Final</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <ciManagement>
