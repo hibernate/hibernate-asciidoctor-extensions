@@ -59,6 +59,8 @@
     </prerequisites>
 
     <properties>
+        <maven.min.version>3.9.9</maven.min.version>
+
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
@@ -66,6 +68,9 @@
         <junit.version>4.13.2</junit.version>
         <jsoup.version>1.18.1</jsoup.version>
         <assertj.version>3.26.3</assertj.version>
+
+        <!-- Run mvn wrapper:wrapper when updating the wrapper plugin version -->
+        <maven-wrapper-plugin.version>3.3.2</maven-wrapper-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
@@ -112,6 +117,14 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-wrapper-plugin</artifactId>
+                <version>${maven-wrapper-plugin.version}</version>
+                <configuration>
+                    <mavenVersion>${maven.min.version}</mavenVersion>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
