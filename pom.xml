@@ -78,6 +78,9 @@
         <maven-javadoc-plugin.version>3.8.0</maven-javadoc-plugin.version>
         <license-maven-plugin.version>4.5</license-maven-plugin.version>
         <version.enforcer.plugin>3.5.0</version.enforcer.plugin>
+        <version.gpg.plugin>3.2.5</version.gpg.plugin>
+
+        <gpg.sign.skip>true</gpg.sign.skip>
 
         <!-- Repository Deployment URLs -->
         <ossrh.releases.repo.id>ossrh</ossrh.releases.repo.id>
@@ -211,8 +214,42 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${version.gpg.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${gpg.sign.skip}</skip>
+                            <homedir>${env.RELEASE_GPG_HOMEDIR}</homedir>
+                            <bestPractices>true</bestPractices>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <gpg.sign.skip>false</gpg.sign.skip>
+            </properties>
+        </profile>
+    </profiles>
 
     <inceptionYear>2017</inceptionYear>
 
