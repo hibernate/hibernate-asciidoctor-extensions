@@ -72,15 +72,15 @@
         <!-- Run mvn wrapper:wrapper when updating the wrapper plugin version -->
         <maven-wrapper-plugin.version>3.3.2</maven-wrapper-plugin.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-deploy-plugin.version>3.1.3</maven-deploy-plugin.version>
         <maven-javadoc-plugin.version>3.10.0</maven-javadoc-plugin.version>
         <license-maven-plugin.version>4.5</license-maven-plugin.version>
         <version.enforcer.plugin>3.5.0</version.enforcer.plugin>
         <version.gpg.plugin>3.2.5</version.gpg.plugin>
+        <version.nexus-staging.plugin>1.7.0</version.nexus-staging.plugin>
 
         <gpg.sign.skip>true</gpg.sign.skip>
+        <deploy.skip>true</deploy.skip>
 
         <!-- Repository Deployment URLs -->
         <ossrh.releases.repo.id>ossrh</ossrh.releases.repo.id>
@@ -134,15 +134,6 @@
                 <version>${maven-compiler-plugin.version}</version>
             </plugin>
             <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven-release-plugin.version}</version>
-                <configuration>
-                    <preparationGoals>clean install</preparationGoals>
-                    <localCheckout>true</localCheckout>
-                    <tagNameFormat>@{project.version}</tagNameFormat>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven-source-plugin.version}</version>
                 <executions>
@@ -154,10 +145,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>${maven-deploy-plugin.version}</version>
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -233,6 +220,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${version.nexus-staging.plugin}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <skipNexusStagingDeployMojo>${deploy.skip}</skipNexusStagingDeployMojo>
+                    <serverId>${ossrh.releases.repo.id}</serverId>
+                    <!-- The following, by default, is only used for actual releases, not for snapshot deployments -->
+                    <nexusUrl>${ossrh.releases.repo.baseUrl}</nexusUrl>
+                    <!-- oss.sonatype.org has been very slow when closing repositories lately;
+                         let's raise the timeout until we switch to s01.sonatype.org -->
+                    <stagingProgressTimeoutMinutes>60</stagingProgressTimeoutMinutes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -247,6 +249,7 @@
             </activation>
             <properties>
                 <gpg.sign.skip>false</gpg.sign.skip>
+                <deploy.skip>false</deploy.skip>
             </properties>
         </profile>
     </profiles>
