@@ -56,7 +56,7 @@
 
     <properties>
         <jdk.min.version>17</jdk.min.version>
-        <maven.min.version>3.9.9</maven.min.version>
+        <maven.min.version>3.9.8</maven.min.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -127,6 +127,7 @@
                 <version>${maven-wrapper-plugin.version}</version>
                 <configuration>
                     <mavenVersion>${maven.min.version}</mavenVersion>
+                    <distributionType>bin</distributionType>
                 </configuration>
             </plugin>
             <plugin>
