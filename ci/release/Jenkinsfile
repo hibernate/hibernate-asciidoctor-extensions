@@ -1,4 +1,4 @@
-@Library('hibernate-jenkins-pipeline-helpers@1.17') _
+@Library('hibernate-jenkins-pipeline-helpers') _
 
 import org.hibernate.jenkins.pipeline.helpers.version.Version
 
