@@ -67,7 +67,7 @@
         <asciidoctorj.version>3.0.0</asciidoctorj.version>
         <junit.version>4.13.2</junit.version>
         <jsoup.version>1.18.3</jsoup.version>
-        <assertj.version>3.26.3</assertj.version>
+        <assertj.version>3.27.3</assertj.version>
 
         <!-- Run mvn wrapper:wrapper when updating the wrapper plugin version -->
         <maven-wrapper-plugin.version>3.3.2</maven-wrapper-plugin.version>
