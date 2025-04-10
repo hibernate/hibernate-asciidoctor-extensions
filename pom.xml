@@ -76,18 +76,7 @@
         <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
         <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
         <version.enforcer.plugin>3.5.0</version.enforcer.plugin>
-        <version.gpg.plugin>3.2.7</version.gpg.plugin>
-        <version.nexus-staging.plugin>1.7.0</version.nexus-staging.plugin>
-
-        <gpg.sign.skip>true</gpg.sign.skip>
-        <deploy.skip>true</deploy.skip>
-
-        <!-- Repository Deployment URLs -->
-        <ossrh.releases.repo.id>ossrh</ossrh.releases.repo.id>
-        <ossrh.releases.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</ossrh.releases.repo.url>
-        <ossrh.releases.repo.baseUrl>https://oss.sonatype.org/</ossrh.releases.repo.baseUrl>
-        <ossrh.snapshots.repo.id>ossrh</ossrh.snapshots.repo.id>
-        <ossrh.snapshots.repo.url>https://oss.sonatype.org/content/repositories/snapshots</ossrh.snapshots.repo.url>
+        <version.maven-deploy-plugin>3.1.4</version.maven-deploy-plugin>
     </properties>
 
     <dependencies>
@@ -204,37 +193,8 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${version.gpg.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${gpg.sign.skip}</skip>
-                            <homedir>${env.RELEASE_GPG_HOMEDIR}</homedir>
-                            <bestPractices>true</bestPractices>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${version.nexus-staging.plugin}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <skipNexusStagingDeployMojo>${deploy.skip}</skipNexusStagingDeployMojo>
-                    <serverId>${ossrh.releases.repo.id}</serverId>
-                    <!-- The following, by default, is only used for actual releases, not for snapshot deployments -->
-                    <nexusUrl>${ossrh.releases.repo.baseUrl}</nexusUrl>
-                    <!-- oss.sonatype.org has been very slow when closing repositories lately;
-                         let's raise the timeout until we switch to s01.sonatype.org -->
-                    <stagingProgressTimeoutMinutes>60</stagingProgressTimeoutMinutes>
-                </configuration>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${version.maven-deploy-plugin}</version>
             </plugin>
         </plugins>
     </build>
@@ -249,8 +209,7 @@
                 </property>
             </activation>
             <properties>
-                <gpg.sign.skip>false</gpg.sign.skip>
-                <deploy.skip>false</deploy.skip>
+                <altDeploymentRepository>local::file:${maven.multiModuleProjectDirectory}/target/staging-deploy/maven</altDeploymentRepository>
             </properties>
         </profile>
     </profiles>
@@ -275,18 +234,4 @@
         <system>Jenkins</system>
         <url>http://ci.hibernate.org/</url>
     </ciManagement>
-
-    <distributionManagement>
-        <repository>
-            <id>${ossrh.releases.repo.id}</id>
-            <name>OSSRH Releases Repository</name>
-            <url>${ossrh.releases.repo.url}</url>
-        </repository>
-        <snapshotRepository>
-            <id>${ossrh.snapshots.repo.id}</id>
-            <name>OSSRH Snapshots Repository</name>
-            <url>${ossrh.snapshots.repo.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>
