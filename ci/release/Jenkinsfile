@@ -47,9 +47,11 @@ pipeline {
 
                     def releaseVersion = Version.parseReleaseVersion(params.RELEASE_VERSION)
                     def developmentVersion = Version.parseDevelopmentVersion(params.DEVELOPMENT_VERSION)
+                    env.JRELEASER_DRY_RUN = params.RELEASE_DRY_RUN
                     echo "Performing full release for version ${releaseVersion.toString()}"
 
-                    withMaven(mavenSettingsConfig: null, mavenLocalRepo: env.WORKSPACE_TMP + '/.m2repository') {
+                    withMaven(mavenSettingsConfig: params.RELEASE_DRY_RUN ? null : 'ci-hibernate.deploy.settings.maven',
+                            mavenLocalRepo: env.WORKSPACE_TMP + '/.m2repository') {
                         configFileProvider([configFile(fileId: 'release.config.ssh', targetLocation: env.HOME + '/.ssh/config'),
                                             configFile(fileId: 'release.config.ssh.knownhosts', targetLocation: env.HOME + '/.ssh/known_hosts')]) {
                             withCredentials([// TODO: Once we switch to maven-central publishing (from nexus2) we need to add a new credentials
@@ -65,10 +67,11 @@ pipeline {
                                 sshagent(['ed25519.Hibernate-CI.github.com']) {
                                     sh 'mvn -v'
                                     sh 'cat $HOME/.ssh/config'
-                                    sh 'git clone https://github.com/hibernate/hibernate-release-scripts.git'
-                                    env.RELEASE_GPG_HOMEDIR = env.WORKSPACE_TMP + '/.gpg'
+                                    dir('.release/scripts') {
+                                        sh 'git clone https://github.com/hibernate/hibernate-release-scripts.git .'
+                                    }
                                     sh """
-										bash -xe hibernate-release-scripts/release.sh ${params.RELEASE_DRY_RUN ? '-d' : ''} \
+										bash -xe .release/scripts/release.sh -j ${params.RELEASE_DRY_RUN ? '-d' : ''} \
 												infra-extensions ${releaseVersion.toString()} ${developmentVersion.toString()}
 									"""
                                 }
