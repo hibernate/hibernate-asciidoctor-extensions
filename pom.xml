@@ -10,7 +10,7 @@
 
     <groupId>org.hibernate.infra</groupId>
     <artifactId>hibernate-asciidoctor-extensions</artifactId>
-    <version>3.1.1.Final</version>
+    <version>3.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Hibernate Asciidoctor extensions</name>
