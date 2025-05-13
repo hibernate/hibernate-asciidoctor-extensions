@@ -58,6 +58,10 @@ pre.highlight {
     font-size: 11px;
 }
 
+.tooltip-text span {
+    color: #fff;
+}
+
 .listingblock:hover .tooltip-text.show {
     opacity: 1;
 }
