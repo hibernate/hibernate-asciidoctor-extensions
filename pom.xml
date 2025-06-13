@@ -17,11 +17,11 @@
     <description>
         Additional Asciidoctor extensions used by the Hibernate projects.
     </description>
-    <url>http://hibernate.org</url>
+    <url>https://hibernate.org</url>
 
     <organization>
         <name>Hibernate</name>
-        <url>http://www.hibernate.org</url>
+        <url>https://www.hibernate.org</url>
     </organization>
 
     <developers>
@@ -30,20 +30,27 @@
             <name>Sanne Grinovero</name>
             <email>sanne@hibernate.org</email>
             <organization>Red Hat, Inc.</organization>
-            <url>http://in.relation.to/sanne-grinovero/</url>
+            <url>https://in.relation.to/sanne-grinovero/</url>
         </developer>
         <developer>
             <id>guillaume.smet</id>
             <name>Guillaume Smet</name>
             <email>guillaume@hibernate.org</email>
             <organization>Red Hat, Inc.</organization>
-            <url>http://in.relation.to/guillaume-smet/</url>
+            <url>https://in.relation.to/guillaume-smet/</url>
         </developer>
         <developer>
             <id>marko.bekhta</id>
             <name>Marko Bekhta</name>
             <email>marko.prykladna@gmail.com</email>
-            <url>http://in.relation.to/marko-bekhta/</url>
+            <url>https://in.relation.to/marko-bekhta/</url>
+        </developer>
+        <developer>
+            <id>yoann.rodiere</id>
+            <name>Yoann Rodière</name>
+            <email>yoann@hibernate.org</email>
+            <organization>Red Hat, Inc.</organization>
+            <url>https://in.relation.to/yoann-rodiere/</url>
         </developer>
     </developers>
 
@@ -64,13 +71,6 @@
         <maven-deploy-plugin.version>3.0.0-M2</maven-deploy-plugin.version>
         <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
         <license-maven-plugin.version>4.1</license-maven-plugin.version>
-
-        <!-- Repository Deployment URLs -->
-        <ossrh.releases.repo.id>ossrh</ossrh.releases.repo.id>
-        <ossrh.releases.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</ossrh.releases.repo.url>
-        <ossrh.releases.repo.baseUrl>https://oss.sonatype.org/</ossrh.releases.repo.baseUrl>
-        <ossrh.snapshots.repo.id>ossrh</ossrh.snapshots.repo.id>
-        <ossrh.snapshots.repo.url>https://oss.sonatype.org/content/repositories/snapshots</ossrh.snapshots.repo.url>
     </properties>
 
     <dependencies>
@@ -164,38 +164,39 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <altDeploymentRepository>local::file:${maven.multiModuleProjectDirectory}/target/staging-deploy/maven</altDeploymentRepository>
+            </properties>
+        </profile>
+    </profiles>
+
     <inceptionYear>2017</inceptionYear>
 
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
     <scm>
         <connection>scm:git:git://github.com/hibernate/hibernate-asciidoctor-extensions.git</connection>
         <developerConnection>scm:git:git@github.com:hibernate/hibernate-asciidoctor-extensions.git</developerConnection>
-        <url>http://github.com/hibernate/hibernate-asciidoctor-extensions</url>
+        <url>https://github.com/hibernate/hibernate-asciidoctor-extensions</url>
         <tag>1.0</tag>
     </scm>
 
     <ciManagement>
         <system>Jenkins</system>
-        <url>http://ci.hibernate.org/</url>
+        <url>https://ci.hibernate.org/</url>
     </ciManagement>
-
-    <distributionManagement>
-        <repository>
-            <id>${ossrh.releases.repo.id}</id>
-            <name>OSSRH Releases Repository</name>
-            <url>${ossrh.releases.repo.url}</url>
-        </repository>
-        <snapshotRepository>
-            <id>${ossrh.snapshots.repo.id}</id>
-            <name>OSSRH Snapshots Repository</name>
-            <url>${ossrh.snapshots.repo.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>
