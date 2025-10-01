@@ -70,10 +70,10 @@
         <assertj.version>3.27.3</assertj.version>
 
         <!-- Run mvn wrapper:wrapper when updating the wrapper plugin version -->
-        <maven-wrapper-plugin.version>3.3.2</maven-wrapper-plugin.version>
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-wrapper-plugin.version>3.3.4</maven-wrapper-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <license-maven-plugin.version>5.0.0</license-maven-plugin.version>
         <version.enforcer.plugin>3.6.1</version.enforcer.plugin>
         <version.maven-deploy-plugin>3.1.4</version.maven-deploy-plugin>
