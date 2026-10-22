@@ -17,11 +17,21 @@ import org.asciidoctor.ast.Document;
 import org.asciidoctor.extension.DocinfoProcessor;
 import org.asciidoctor.extension.Location;
 import org.asciidoctor.extension.LocationType;
+import org.asciidoctor.log.LogRecord;
+import org.asciidoctor.log.Severity;
 
 @Location(LocationType.FOOTER)
 public class CopyToClipboardProcessor extends DocinfoProcessor {
 	@Override
 	public String process(Document document) {
+		String backend = String.valueOf( document.getAttribute( "backend" ) );
+		if ( !backend.startsWith( "html" ) && !backend.startsWith( "xhtml" ) ) {
+			log( new LogRecord(
+					Severity.INFO,
+					CopyToClipboardProcessor.class.getSimpleName() + " only applies to HTML documents, skipping. Backend is " + backend + "." ) );
+			return "";
+		}
+
 		try (
 				InputStream is = this.getClass().getResourceAsStream( "/copy/clipboard.min.js" );
 				InputStreamReader isr = new InputStreamReader( is, StandardCharsets.UTF_8 );
